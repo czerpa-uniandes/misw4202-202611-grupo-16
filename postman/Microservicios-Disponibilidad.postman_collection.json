@@ -126,7 +126,7 @@
   "variable": [
     {
       "key": "cart_base_url",
-      "value": "http://localhost:5006"
+      "value": "http://localhost:5011"
     }
   ]
 }
