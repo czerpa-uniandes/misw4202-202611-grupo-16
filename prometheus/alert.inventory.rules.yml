@@ -1,0 +1,23 @@
+groups:
+- name: inventory-monitoring-alerts
+  rules:
+  - alert: InventoryCommands1Down
+    expr: service_up{service_name="inventory-commands-1"} == 0
+    for: 5s
+    labels:
+      severity: critical
+  - alert: InventoryCommands2Down
+    expr: service_up{service_name="inventory-commands-2"} == 0
+    for: 5s
+    labels:
+      severity: critical
+  - alert: InventoryQueries1Down
+    expr: service_up{service_name="inventory-queries-1"} == 0
+    for: 5s
+    labels:
+      severity: critical
+  - alert: InventoryQueries2Down
+    expr: service_up{service_name="inventory-queries-2"} == 0
+    for: 5s
+    labels:
+      severity: critical

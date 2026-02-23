@@ -3,10 +3,15 @@ global:
   evaluation_interval: 5s
 
 rule_files:
-  - "alert.rules.yml"
+  - "alert.reservation.rules.yml"
+  - "alert.inventory.rules.yml"
 
 scrape_configs:
-  - job_name: "monitoring"
+  - job_name: "reservation-monitoring"
     static_configs:
       - targets:
-          - monitoring:5000
+          - monitor_reservation:5000
+  - job_name: "inventory-monitoring"
+    static_configs:
+      - targets:
+          - monitor:5005

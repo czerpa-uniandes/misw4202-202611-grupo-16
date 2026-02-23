@@ -8,3 +8,4 @@ redis
 rq
 psycopg2-binary
 marshmallow
+prometheus_client

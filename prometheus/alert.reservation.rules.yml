@@ -3,6 +3,6 @@ groups:
   rules:
   - alert: ReservationDown
     expr: service_up{service_name="reservation"} == 0
-    for: 15s
+    for: 5s
     labels:
       severity: critical
