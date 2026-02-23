@@ -1,0 +1,171 @@
+{
+  "info": {
+    "_postman_id": "3e75c8be-0ef6-4f74-a12c-4a2b6f4ac5de",
+    "name": "Microservicios Disponibilidad - Cart & Order",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Colección didáctica para validar disponibilidad de cart_service con checkout asíncrono hacia order_service."
+  },
+  "item": [
+    {
+      "name": "Cart Service",
+      "item": [
+        {
+          "name": "POST /cart/items - Add item A001",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"item_id\": \"A001\",\n  \"quantity\": 2\n}"
+            },
+            "url": {
+              "raw": "{{cart_base_url}}/cart/items",
+              "host": [
+                "{{cart_base_url}}"
+              ],
+              "path": [
+                "cart",
+                "items"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /cart/items - Add item B002",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"item_id\": \"B002\",\n  \"quantity\": 1\n}"
+            },
+            "url": {
+              "raw": "{{cart_base_url}}/cart/items",
+              "host": [
+                "{{cart_base_url}}"
+              ],
+              "path": [
+                "cart",
+                "items"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /cart",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{cart_base_url}}/cart",
+              "host": [
+                "{{cart_base_url}}"
+              ],
+              "path": [
+                "cart"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /cart/checkout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{cart_base_url}}/cart/checkout",
+              "host": [
+                "{{cart_base_url}}"
+              ],
+              "path": [
+                "cart",
+                "checkout"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Checkout responde 202 Accepted', function () {",
+                  "    pm.response.to.have.status(202);",
+                  "});",
+                  "",
+                  "pm.test('Estado queued en body', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.status).to.eql('queued');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Order Service",
+      "item": [
+        {
+          "name": "GET /orders",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{order_base_url}}/orders",
+              "host": [
+                "{{order_base_url}}"
+              ],
+              "path": [
+                "orders"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /health",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{order_base_url}}/health",
+              "host": [
+                "{{order_base_url}}"
+              ],
+              "path": [
+                "health"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "cart_base_url",
+      "value": "http://localhost:5001"
+    },
+    {
+      "key": "order_base_url",
+      "value": "http://localhost:5002"
+    }
+  ]
+}

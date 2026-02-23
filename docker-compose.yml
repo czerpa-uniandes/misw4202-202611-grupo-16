@@ -1,0 +1,50 @@
+services:
+  cart_service:
+    build:
+      context: .
+      dockerfile: cart_service/Dockerfile
+    container_name: cart_service
+    ports:
+      - "5001:5001"
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
+
+  order_service:
+    build:
+      context: .
+      dockerfile: order_service/Dockerfile
+    container_name: order_service
+    ports:
+      - "5002:5002"
+    volumes:
+      - ./data:/app/data
+    depends_on:
+      - cart_service
+    restart: unless-stopped
+
+  blackbox_exporter:
+    image: prom/blackbox-exporter:v0.25.0
+    container_name: blackbox_exporter
+    command:
+      - "--config.file=/etc/blackbox/blackbox.yml"
+    volumes:
+      - ./monitoring/blackbox.yml:/etc/blackbox/blackbox.yml:ro
+    ports:
+      - "9115:9115"
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus:v3.2.1
+    container_name: prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+    depends_on:
+      - cart_service
+      - order_service
+      - blackbox_exporter
+    restart: unless-stopped
