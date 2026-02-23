@@ -21,7 +21,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"item_id\": \"A001\",\n  \"quantity\": 2\n}"
+              "raw": "{\n  \"item_id\": \"A001\",\n  \"quantity\": 500\n}"
             },
             "url": {
               "raw": "{{cart_base_url}}/cart/items",
@@ -47,7 +47,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"item_id\": \"B002\",\n  \"quantity\": 1\n}"
+              "raw": "{\n  \"item_id\": \"B002\",\n  \"quantity\": 500\n}"
             },
             "url": {
               "raw": "{{cart_base_url}}/cart/items",
@@ -121,51 +121,12 @@
           ]
         }
       ]
-    },
-    {
-      "name": "Order Service",
-      "item": [
-        {
-          "name": "GET /orders",
-          "request": {
-            "method": "GET",
-            "url": {
-              "raw": "{{order_base_url}}/orders",
-              "host": [
-                "{{order_base_url}}"
-              ],
-              "path": [
-                "orders"
-              ]
-            }
-          }
-        },
-        {
-          "name": "GET /health",
-          "request": {
-            "method": "GET",
-            "url": {
-              "raw": "{{order_base_url}}/health",
-              "host": [
-                "{{order_base_url}}"
-              ],
-              "path": [
-                "health"
-              ]
-            }
-          }
-        }
-      ]
     }
   ],
   "variable": [
     {
       "key": "cart_base_url",
-      "value": "http://localhost:5001"
-    },
-    {
-      "key": "order_base_url",
-      "value": "http://localhost:5002"
+      "value": "http://localhost:5006"
     }
   ]
 }
