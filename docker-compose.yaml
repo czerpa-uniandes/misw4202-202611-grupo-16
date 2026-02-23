@@ -1,0 +1,97 @@
+version: "3.9"
+
+services:
+
+  postgres:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_DB: inventory
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7
+    restart: always
+    ports:
+      - "6379:6379"
+
+  inventory-commands-1:
+    build: ./Inventory
+    restart: always
+    environment:
+      - SERVICE_ID=inventory-commands-1
+    command: sh -c "python build_database.py && python api_commands.py"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    ports:
+      - "5001:5000"
+
+  inventory-commands-2:
+    build: ./Inventory
+    restart: always
+    environment:
+      - SERVICE_ID=inventory-commands-2
+    command: sh -c "python build_database.py && python api_commands.py"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    ports:
+      - "5003:5000"
+
+  inventory-queries-1:
+    build: ./Inventory
+    restart: always
+    environment:
+      - SERVICE_ID=inventory-queries-1
+    command: sh -c "python build_database.py && python api_queries.py"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "5002:5000"
+
+  inventory-queries-2:
+    build: ./Inventory
+    restart: always
+    environment:
+      - SERVICE_ID=inventory-queries-2
+    command: sh -c "python build_database.py && python api_queries.py"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    ports:
+      - "5004:5000"
+
+  monitor:
+    build: ./monitor
+    restart: always
+    ports:
+      - "5005:5005"
+    depends_on:
+      redis:
+        condition: service_started
+
+  inventory-worker:
+    build: ./Inventory
+    restart: always
+    command: rq worker -u redis://redis:6379/0
+    depends_on:
+      redis:
+        condition: service_started
+      postgres:
+        condition: service_healthy

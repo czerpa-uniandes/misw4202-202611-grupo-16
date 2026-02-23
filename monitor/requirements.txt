@@ -1,0 +1,10 @@
+Flask
+flask-marshmallow
+Flask-RESTful
+Flask-SQLAlchemy
+SQLAlchemy
+marshmallow-sqlalchemy
+redis
+rq
+psycopg2-binary
+marshmallow
