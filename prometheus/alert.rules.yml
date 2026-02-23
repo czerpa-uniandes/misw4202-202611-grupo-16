@@ -1,0 +1,8 @@
+groups:
+- name: reservation-monitoring-alerts
+  rules:
+  - alert: ReservationDown
+    expr: service_up{service_name="reservation"} == 0
+    for: 15s
+    labels:
+      severity: critical
