@@ -2,6 +2,17 @@ version: "3.9"
 
 services:
 
+  cart_service:
+    build:
+      context: .
+      dockerfile: cart_service/Dockerfile
+    container_name: cart_service
+    ports:
+      - "5001:5006"
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
+
   postgres:
     image: postgres:15
     restart: always
