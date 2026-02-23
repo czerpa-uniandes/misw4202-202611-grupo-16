@@ -26,6 +26,7 @@ services:
   inventory-commands-1:
     build: ./Inventory
     restart: always
+    container_name: inventory-commands-1
     environment:
       - SERVICE_ID=inventory-commands-1
     command: sh -c "python build_database.py && python api_commands.py"
@@ -40,6 +41,7 @@ services:
   inventory-commands-2:
     build: ./Inventory
     restart: always
+    container_name: inventory-commands-2
     environment:
       - SERVICE_ID=inventory-commands-2
     command: sh -c "python build_database.py && python api_commands.py"
@@ -54,6 +56,7 @@ services:
   inventory-queries-1:
     build: ./Inventory
     restart: always
+    container_name: inventory-queries-1
     environment:
       - SERVICE_ID=inventory-queries-1
     command: sh -c "python build_database.py && python api_queries.py"
@@ -66,6 +69,7 @@ services:
   inventory-queries-2:
     build: ./Inventory
     restart: always
+    container_name: inventory-queries-2
     environment:
       - SERVICE_ID=inventory-queries-2
     command: sh -c "python build_database.py && python api_queries.py"
@@ -106,7 +110,7 @@ services:
     build: ./monitor_reservation
     container_name: monitor_reservation
     ports:
-      - "5001:5000"
+      - "5006:5000"
     depends_on:
       - reservation
   
@@ -115,6 +119,7 @@ services:
     container_name: prometheus
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-      - ./prometheus/alert.rules.yml:/etc/prometheus/alert.rules.yml
+      - ./prometheus/alert.reservation.rules.yml:/etc/prometheus/alert.reservation.rules.yml
+      - ./prometheus/alert.inventory.rules.yml:/etc/prometheus/alert.inventory.rules.yml
     ports:
       - "9090:9090"
