@@ -7,6 +7,6 @@ RUN pip install --no-cache-dir -r /app/requirements.txt
 
 COPY . /app
 
-EXPOSE 5001
+EXPOSE 5011
 
-CMD ["python", "-m", "flask", "--app", "cart_service/app.py", "run", "--host=0.0.0.0", "--port=5001"]
+CMD ["python", "-m", "flask", "--app", "cart_service/app.py", "run", "--host=0.0.0.0", "--port=5011"]
