@@ -1,0 +1,11 @@
+groups:
+  - name: token_security_alerts
+    rules:
+
+      - alert: InvalidTokenDetected
+        expr: token_validation_failure_total > 0
+        labels:
+          severity: critical
+        annotations:
+          summary: "Token inválido detectado"
+          description: "Se detectó un intento de autenticación con token inválido."

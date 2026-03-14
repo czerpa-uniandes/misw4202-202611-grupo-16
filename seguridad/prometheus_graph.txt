@@ -1,0 +1,6 @@
+{__name__=~"token_validation_(success|failure)_total"}
+  or
+  label_replace(
+    sum(token_validation_success_total + token_validation_failure_total) by (),
+    "__name__", "token_validation_total", "", ""
+  )
