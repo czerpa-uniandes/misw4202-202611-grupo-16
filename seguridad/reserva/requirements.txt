@@ -1,0 +1,4 @@
+# Requisitos por servicio (usar los de cada carpeta)
+# api_gateway/requirements.txt
+# clientes_service/requirements.txt
+# reservas_service/requirements.txt

@@ -1,0 +1,71 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: reserva_postgres
+    environment:
+      POSTGRES_DB: reservadb
+      POSTGRES_USER: reserva
+      POSTGRES_PASSWORD: reserva
+    ports:
+      - "55432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U reserva -d reservadb"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  clientes_service:
+    build: ./clientes_service
+    container_name: reserva_clientes_service
+    environment:
+      DATABASE_URL: postgresql+psycopg2://reserva:reserva@postgres:5432/reservadb
+      FLASK_ENV: production
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "6011:5000"
+
+  reservas_service:
+    build: ./reservas_service
+    container_name: reserva_reservas_service
+    environment:
+      DATABASE_URL: postgresql+psycopg2://reserva:reserva@postgres:5432/reservadb
+      CLIENTES_SERVICE_URL: http://clientes_service:5000
+      TAX_RATE: "0.19"
+      INIT_DB: "true"
+      FLASK_ENV: production
+    depends_on:
+      postgres:
+        condition: service_healthy
+      clientes_service:
+        condition: service_started
+    ports:
+      - "6012:5000"
+
+  api_gateway:
+    build: ./api_gateway
+    container_name: reserva_api_gateway
+    environment:
+      CLIENTES_SERVICE_URL: http://clientes_service:5000
+      RESERVAS_SERVICE_URL: http://reservas_service:5000
+      FLASK_ENV: production
+    depends_on:
+      - clientes_service
+      - reservas_service
+    ports:
+      - "6010:5000"
+
+  prometheus:
+    image: prom/prometheus:v3.2.1
+    container_name: reserva_prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    depends_on:
+      - api_gateway
+      - clientes_service
+      - reservas_service
+    ports:
+      - "9091:9090"
